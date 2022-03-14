@@ -31,26 +31,16 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> saveUser(@RequestBody User user){
-        String passwordEncripted = new BCryptPasswordEncoder(12).encode(user.getPassword());
-        user.setPassword(passwordEncripted);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
-    }
-
-    @PostMapping("/validatePassword")
-    public ResponseEntity<Object> loginUser(@RequestBody User user){
-        System.out.println("TESTE USER" + user.getUsername());
-        Optional<User> userFind = userRepository.findByUsername(user.getUsername());
-
-        if(userFind.isEmpty()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied, user not found");
+        Optional<User> userExists = userRepository.findByUsername(user.getUsername());
+        if(userExists.isEmpty()){
+            String passwordEncripted = new BCryptPasswordEncoder(12).encode(user.getPassword());
+            user.setPassword(passwordEncripted);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
         }
 
-        Boolean encodedPassword = new BCryptPasswordEncoder(12).matches(user.getPassword(), userFind.get().getPassword());
-
-        HttpStatus status = (encodedPassword) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
-        return ResponseEntity.status(status).body(encodedPassword);
     }
-
 
 }
 

@@ -1,7 +1,5 @@
 package com.blog.api.controllers;
 
-import java.util.Optional;
-
 import com.blog.api.models.User;
 import com.blog.api.repositories.UserRepository;
 
@@ -31,8 +29,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> saveUser(@RequestBody User user){
-        Optional<User> userExists = userRepository.findByUsername(user.getUsername());
-        if(userExists.isEmpty()){
+        User userExists = userRepository.findByUsername(user.getUsername());
+        if(userExists == null){
             String passwordEncripted = new BCryptPasswordEncoder(12).encode(user.getPassword());
             user.setPassword(passwordEncripted);
             return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));

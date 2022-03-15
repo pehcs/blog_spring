@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,6 +18,23 @@ public class Posts implements Serializable{
     private Long id;
     private String title;
     private String body;
+
+    @ManyToOne
+    public User username;
+
+  
+    public Posts(String title, String body, User username) {
+        this.title = title;
+        this.body = body;
+        this.username = username;
+    }
+
+    public User getUsername() {
+        return username;
+    }
+    public void setUsername(User username) {
+        this.username = username;
+    }
 
     public Long getId() {
         return id;

@@ -24,9 +24,16 @@ public class User{
     private String username;
     private String roles = "";
     private String password;
+    
     @OneToMany
     private List<Posts> posts;
 
+    public List<Posts> getPosts() {
+        return posts;
+    }
+    public void setPosts(List<Posts> posts) {
+        this.posts = posts;
+    }
     public User(String username, String password, String roles) {
         this.username = username;
         this.password = password;

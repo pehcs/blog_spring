@@ -1,10 +1,6 @@
 package com.blog.api.utils;
 
-import static java.lang.String.format;
-
 import java.util.Date;
-
-import com.blog.api.models.User;
 
 import org.springframework.stereotype.Component;
 
@@ -19,15 +15,18 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Component
 public class JwtTokenUtil {
 
-    private final String jwtSecret = "JAPALANA_NA_LAMA_LANA";
-    private final String jwtIssuer = "example.io";
+    public static final String jwtSecret = "JAPALANA_NA_LAMA_LANA";
+    private final String jwtIssuer = "com.blog";
+    private final long EXPIRATION = 180000;
+    public static final String HEADER_STRING = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(String user) {
         return Jwts.builder()
-                .setSubject(format("%s,%s", user.getId(), user.getUsername()))
+                .setSubject(user)
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION)) // 1 week
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
@@ -46,8 +45,9 @@ public class JwtTokenUtil {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.getSubject().split(",")[1];
+                
+        System.out.println("TESTADN" + claims);
+        return claims.getSubject();
     }
 
     public Date getExpirationDate(String token) {

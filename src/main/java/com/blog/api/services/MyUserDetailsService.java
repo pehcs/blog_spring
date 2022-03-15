@@ -21,10 +21,14 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.userRepository.findByUsername(username);
+
+        if(user==null){
+            throw new UsernameNotFoundException("User not found");
+        }
         if(user.getRoleList()==null){
             user.setRoles("USER");
         }        
-        System.out.println(user);
+    
         PrincipalUser userPrincipal = new PrincipalUser(user);
 
         return userPrincipal;
